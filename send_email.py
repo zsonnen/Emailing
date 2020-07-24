@@ -11,7 +11,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Tuple
 
-CLIENT_NAME = "Name"
+
+CLIENT_NAME = "Me"
 
 EMAIL_ADDRESS = os.environ.get('EMAIL_USER')
 EMAIL_PASSWORD = os.environ.get('EMAIL_PASS')
@@ -92,7 +93,7 @@ def get_info(name: str) -> str:
     with open('info.txt', 'r') as f:
         data = dict(line.rstrip().split(': ') for line in f) 
     client_data = data[name]
-    
+
     return client_data
 
 def get_youtube_vid() -> str:
@@ -103,51 +104,49 @@ def get_youtube_vid() -> str:
     return video 
 
 def personalize_message() -> tuple:
-    name = CLIENT_NAME
-
+    
     msg = """
-    Thanks for accepting to be a volunteer source of my message tests! 
+    Thank you for accepting to be a volunteer source of my message tests :D! 
     Of course, sending you a reminder to go workout!
-    -stay active in anyway possible!
-    In anycase, this was just a trial.
+    - always try to stay active in anyway possible!
+    In anycase this was just a trial run.
     """.split('\n')
 
     url = get_youtube_vid()
-    url_text = "Your YOUTUBE VID OF THE DAY!"
+    url_text = "YOUR YOUTUBE VIDEO OF THE DAY! (Click To Watch)"
 
-    reply = "If there's any specific category of video's you enjoy: let me know, I got you covered"
+    reply = "If there are specific categories of video's you would enjoy, please feel free to reply with that info."
 
-    note = "Oh, and the actual python script I wrote to send this email is attached (if you care to look)"
+    note = "Note: the actual python script I wrote to send this email is attached! (if you would want to look)"
     
-    signature = "-this message written to you using python\n-ZS".split('\n')
-    p_s = "If you have any feedback, especially as it pertains to color choice, overall design etc. feel free to reply!\n\
-         (might look better on phone) But my colorblindness could be a problem in this area".split('\n')
+    signature = "- this message written to you using python\n- ZS".split('\n')
 
-    return (name, msg, url, url_text, reply, note, signature, p_s)
+    p_s = "If you have any feedback, as it pertains to color choice, or overall design etc. feel free to reply!\n\
+         I realize my color blindness might be a slight problem in this area, but I welcome any input!".split('\n')
+
+    return (msg, url, url_text, reply, note, signature, p_s)
 
 
 def main():
     _recipient = get_info(CLIENT_NAME)
 
-    # Change RECIPIENT to send to somebody else: as a string: 'John.Doe@gmail.com'
+    # Set RECIPIENT to EMAIL_ADDRESS to send to yourself
     RECIPIENT = EMAIL_ADDRESS
     # RECIPIENT = _recipient
 
-    PERSON_NAME, MSG, URL, URL_TEXT, REPLY, NOTE, SIGNATURE, P_S = personalize_message()
+    MSG, URL, URL_TEXT, REPLY, NOTE, SIGNATURE, P_S = personalize_message()
 
-    subject = "Message from <MyName>!"
-    small_header = "Harnassing the power of python (and HTML)"
-    content = f"""\
-    Hey! 
-    Let's see if this works: Though I am a bit colorblind, I hope this choice is solid.   
-    """
-    msg_text = "regular text email: fallback if the html doesn't load. hopefully you don't see this!"
+    subject = "Message from [ZS]!"
+    msg_text = "Regular text email: fallback if the html doesn't load. Hopefully you don't see this!"
+
+    h_text = "Harnassing the power of python (and HTML)"
     
     # Emails don't support css or the html <style> tag (at least with regards to gmail)
     # My workaround was injecting these strings as inline styles
     body_style = "background-color:#e7e7e7;"
     h2_style = "color: #003366"
     h4_style = "color: #3F3F3F"
+
     p_style1 = "color: #003366"
     p_style2 = "color: #3F3F3F; font-style: italic;"
 
@@ -155,24 +154,21 @@ def main():
     <!DOCTYPE html>
     <html>
         <body style="{body_style}">
-            <h2 style="{h2_style}"><strong>Hey {PERSON_NAME}!</strong></h2>
-            <h4 style="{h4_style}"><strong><i>{small_header}</i></strong></h4>
-            <p style="{p_style1}">{content}</p>
-            <p style="{p_style1}">{MSG[1]}</p>
-      
-            <p style="{p_style1}">Sending you:
+            <h2 style="{h2_style}"><strong>Hey {CLIENT_NAME}!</strong></h2>
+            <h4 style="{h4_style}"><strong><i>{h_text}</i></strong></h4>            
+            <p style="{p_style1}">{MSG[1]}</p>    
+            <p style="{p_style1}">
+                Sending you:
                 <br/>
                 <a href="{URL}" target="_parent"><button>{URL_TEXT}</button></a>
-                <br/>
-                <br/>
             </p>
+            <p style="{p_style1}">{REPLY}</p>
             <p style="{p_style1}">
                 {MSG[2]}
                 <br/>
                 {MSG[3]}
             </p>
-            <p style="{p_style1}">{MSG[4]}</p>
-            <p style="{p_style1}">{REPLY}</p>
+            <p style="{p_style1}">{MSG[4]}</p>            
             <p style="{p_style1}">{NOTE}</p>
             <p style="{p_style2}">
                 {SIGNATURE[0]}
@@ -183,12 +179,12 @@ def main():
                 <strong>P.S!</strong>
                 <br/>{P_S[0]}
                 <br/>{P_S[1]}
-            </p>            
+            </p> 
         </body>
     </html>  
     """
     
-    #Example of attaching files
+    #A couple attachments, for example purposes
     files = ['snowboard.jpg', FILENAME] 
 
     my_email = MyEmail(EMAIL_ADDRESS, RECIPIENT, subject, msg_html, msg_text, files)
