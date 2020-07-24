@@ -11,8 +11,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Tuple
 
-
-CLIENT_NAME = "name"
+CLIENT_NAME = "Name"
 
 EMAIL_ADDRESS = os.environ.get('EMAIL_USER')
 EMAIL_PASSWORD = os.environ.get('EMAIL_PASS')
@@ -93,7 +92,7 @@ def get_info(name: str) -> str:
     with open('info.txt', 'r') as f:
         data = dict(line.rstrip().split(': ') for line in f) 
     client_data = data[name]
-
+    
     return client_data
 
 def get_youtube_vid() -> str:
@@ -107,10 +106,10 @@ def personalize_message() -> tuple:
     name = CLIENT_NAME
 
     msg = """
-    Thanks for accepting to be a volunteer source of my message tests :D 
-    Of course, sending you a reminder to go workout!!
+    Thanks for accepting to be a volunteer source of my message tests! 
+    Of course, sending you a reminder to go workout!
     -stay active in anyway possible!
-    In anycase this was just a trial.
+    In anycase, this was just a trial.
     """.split('\n')
 
     url = get_youtube_vid()
@@ -146,7 +145,6 @@ def main():
     
     # Emails don't support css or the html <style> tag (at least with regards to gmail)
     # My workaround was injecting these strings as inline styles
-
     body_style = "background-color:#e7e7e7;"
     h2_style = "color: #003366"
     h4_style = "color: #3F3F3F"
